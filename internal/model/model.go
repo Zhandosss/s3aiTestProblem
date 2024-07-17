@@ -14,11 +14,17 @@ type Account struct {
 }
 
 func (a *Account) Deposit(amount float64) error {
+	a.mx.Lock()
+	defer a.mx.Unlock()
+
 	a.Balance += amount
 	return nil
 }
 
 func (a *Account) Withdraw(amount float64) error {
+	a.mx.Lock()
+	defer a.mx.Unlock()
+
 	if a.Balance < amount {
 		return ErrNotEnoughMoney
 	}
@@ -28,6 +34,9 @@ func (a *Account) Withdraw(amount float64) error {
 }
 
 func (a *Account) GetBalance() float64 {
+	a.mx.Lock()
+	defer a.mx.Unlock()
+
 	return a.Balance
 }
 
